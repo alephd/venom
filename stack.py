@@ -297,22 +297,3 @@ for l in r.get():
     print(l)
 """, 'white'))
         return self
-
-    @roles('master')
-    def master(self):
-        # Run ipcontroller
-        daemon('ipcontroller', 'ipcontroller --ip="*"')
-        local('mkdir -p ~/.ipython/profile_default/security/')
-        wait_for_file('/home/ubuntu/.ipython/profile_default/security/ipcontroller-client.json')
-        wait_for_file('/home/ubuntu/.ipython/profile_default/security/ipcontroller-engine.json')
-        get('/home/ubuntu/.ipython/profile_default/security/ipcontroller-client.json', '~/.ipython/profile_default/security/ipcontroller-client.json')
-        get('/home/ubuntu/.ipython/profile_default/security/ipcontroller-engine.json', '~/.ipython/profile_default/security/ipcontroller-engine.json')
-        daemon('notebook', 'jupyter notebook --ip="*" --NotebookApp.token=""')
-        sudo('ipcluster nbextension enable')
-
-    @roles('workers')
-    def workers(self):
-        run('mkdir -p /home/ubuntu/.ipython/profile_default/security/')
-        put('~/.ipython/profile_default/security/ipcontroller-client.json', '/home/ubuntu/.ipython/profile_default/security/ipcontroller-client.json')
-        put('~/.ipython/profile_default/security/ipcontroller-engine.json', '/home/ubuntu/.ipython/profile_default/security/ipcontroller-engine.json')
-        daemon('ipengine', 'ipengine --file=/home/ubuntu/.ipython/profile_default/security/ipcontroller-engine.json --ip="*"')
