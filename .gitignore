@@ -1,0 +1,7 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.db
+
+# OSX file
+.DS_Store
+session.json
